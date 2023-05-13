@@ -1,120 +1,156 @@
 import {polarToCartesian, minMax} from "./utils.mjs";
 import {charMetricsMap} from "./char-metrics-map.mjs";
 
-export let metrics = {
-  head: {pos: {x: 250, y: 125}},
-  shoulderLeft: {angle: 103, pos: {x: 250, y: 160}},
-  elbowLeft: {angle: 90, distance: 70, pos: null},
-  wristLeft: {distance: 70, pos: null},
-  shoulderRight: {angle: 77, pos: {x: 250, y: 160}},
-  elbowRight: {angle: 90, distance: 70, pos: null},
-  wristRight: {distance: 70, pos: null},
-  thighLeft: {angle: 105, pos: {x: 250, y: 275}},
-  kneeLeft: {angle: 90, distance: 75, pos: null},
-  heelLeft: {angle: 180, distance: 75, pos: null},
-  toeLeft: {distance: 15, pos: null},
-  thighRight: {angle: 75, pos: {x: 250, y: 275}},
-  kneeRight: {angle: 90, distance: 75, pos: null},
-  heelRight: {angle: 0, distance: 75, pos: null},
-  toeRight: {distance: 15, pos: null},
+export class Metrics {
+  head = {radius: 0, pos: null};
+  shoulderLeft = {angle: 90, pos: null};
+  elbowLeft = {angle: 90, distance: 0, pos: null};
+  wristLeft = {distance: 0, pos: null};
+  shoulderRight = {angle: 90, pos: null};
+  elbowRight = {angle: 90, distance: 0, pos: null};
+  wristRight = {distance: 0, pos: null};
+  thighLeft = {angle: 90, pos: null};
+  kneeLeft = {angle: 90, distance: 0, pos: null};
+  heelLeft = {angle: 180, distance: 0, pos: null};
+  toeLeft = {distance: 0, pos: null};
+  thighRight = {angle: 90, pos: null};
+  kneeRight = {angle: 90, distance: 0, pos: null};
+  heelRight = {angle: 0, distance: 0, pos: null};
+  toeRight = {distance: 0, pos: null};
 
-  floor: {pos: {y: 422}},
-  flipPoint: {angle: 0, pos: {x: 250, y: 261}},
-};
+  floor = {pos: null};
+  flipPoint = {angle: 0, pos: null};
 
-export function getFlagPos() {
-  let {head, wristLeft, wristRight, flipPoint} = metrics;
-  let isFlipped = flipPoint.angle > 0;
-  let [flagWrist, freeWrist] = isFlipped ? [wristLeft, wristRight] : [wristRight, wristLeft];
-  if (Math.abs(freeWrist.pos.x - head.pos.x) > Math.abs(flagWrist.pos.x - head.pos.x)) {
-    flagWrist = freeWrist;
+  constructor({char = "", size = 500}) {
+    this.setSize(size);
+    this.setChar(char);
   }
-  return flagWrist.pos;
-}
 
-export function* getMoveIterator(letter) {
-  let {sl, el, sr, er, tl, kl, hl, tr, kr, hr, fp} = charMetricsMap.get(letter);
-  if (fp !== metrics.flipPoint.angle) {
-    yield* rotate("flipPoint", fp, 5);
+  setSize(size) {
+    this.head.radius = size * 0.05;
+    this.head.pos = {x: size * 0.5, y: size * 0.25};
+    this.shoulderLeft.pos = {x: this.head.pos.x, y: size * 0.32};
+    this.shoulderRight.pos = {...this.shoulderLeft.pos};
+    this.thighLeft.pos = {x: this.head.pos.x, y: size * 0.55};
+    this.thighRight.pos = {...this.thighLeft.pos};
+    this.floor.pos = {y: size * 0.844};
+    this.elbowLeft.distance = this.elbowRight.distance = this.wristLeft.distance = this.wristRight.distance = size * 0.14;
+    this.kneeLeft.distance = this.kneeRight.distance = this.heelLeft.distance = this.heelRight.distance = size * 0.15;
+    this.toeLeft.distance = this.toeRight.distance = size * 0.03;
+    this.flipPoint.pos = {x: this.head.pos.x, y: (this.head.pos.y + this.thighLeft.pos.y + this.kneeLeft.distance + this.heelLeft.distance) * 0.5};
   }
-  let limbIterators = [
-    rotate("shoulderLeft", sl),
-    rotate("elbowLeft", el),
-    rotate("shoulderRight", sr),
-    rotate("elbowRight", er),
-    rotate("thighLeft", tl),
-    rotate("kneeLeft", kl),
-    rotate("heelLeft", hl),
-    rotate("thighRight", tr),
-    rotate("kneeRight", kr),
-    rotate("heelRight", hr),
-  ];
-  while (!limbIterators.map(iterator => iterator.next()).every(({done}) => done)) {
-    updateMetrics();
-    yield;
+
+  setChar(char) {
+    let charMetrics = charMetricsMap.get(char);
+    if (!charMetrics) {
+      return;
+    }
+    this.shoulderLeft.angle = charMetrics.sl;
+    this.elbowLeft.angle = charMetrics.el;
+    this.shoulderRight.angle = charMetrics.sr;
+    this.elbowRight.angle = charMetrics.er;
+    this.thighLeft.angle = charMetrics.tl;
+    this.kneeLeft.angle = charMetrics.kl;
+    this.heelLeft.angle = charMetrics.hl;
+    this.thighRight.angle = charMetrics.tr;
+    this.kneeRight.angle = charMetrics.kr;
+    this.heelRight.angle = charMetrics.hr;
+    this.flipPoint.angle = charMetrics.fp;
+    this.#updateMetrics();
+  }
+
+  getFlagPos() {
+    let {head, wristLeft, wristRight, flipPoint} = this;
+    let isFlipped = flipPoint.angle > 0;
+    let [flagWrist, freeWrist] = isFlipped ? [wristLeft, wristRight] : [wristRight, wristLeft];
+    if (Math.abs(freeWrist.pos.x - head.pos.x) > Math.abs(flagWrist.pos.x - head.pos.x)) {
+      flagWrist = freeWrist;
+    }
+    return flagWrist.pos;
+  }
+
+  * getMoveIterator(char) {
+    let {sl, el, sr, er, tl, kl, hl, tr, kr, hr, fp} = charMetricsMap.get(char);
+    if (fp !== this.flipPoint.angle) {
+      yield* this.rotate("flipPoint", fp, 5);
+    }
+    let limbIterators = [
+      this.rotate("shoulderLeft", sl),
+      this.rotate("elbowLeft", el),
+      this.rotate("shoulderRight", sr),
+      this.rotate("elbowRight", er),
+      this.rotate("thighLeft", tl),
+      this.rotate("kneeLeft", kl),
+      this.rotate("heelLeft", hl),
+      this.rotate("thighRight", tr),
+      this.rotate("kneeRight", kr),
+      this.rotate("heelRight", hr),
+    ];
+    while (!limbIterators.map(iterator => iterator.next()).every(({done}) => done)) {
+      this.#updateMetrics();
+      yield;
+    }
+  }
+
+  * rotate(metric, toAngle, step = 1) {
+    let increment = toAngle > this[metric].angle ? step : -step;
+    while (Math.abs(toAngle - this[metric].angle) > step / 10) {
+      this[metric].angle += increment;
+      yield;
+    }
+    this[metric].angle %= 360;
+  }
+
+  #updateMetrics() {
+    let headPos = this.head.pos;
+    let shoulderLeftPos = this.shoulderLeft.pos;
+    let shoulderRightPos = this.shoulderRight.pos;
+    let elbowLeftPos = polarToCartesian(this.shoulderLeft.angle, this.elbowLeft.distance, shoulderLeftPos);
+    let elbowRightPos = polarToCartesian(this.shoulderRight.angle, this.elbowRight.distance, shoulderRightPos);
+    let wristLeftPos = polarToCartesian(this.elbowLeft.angle, this.wristLeft.distance, elbowLeftPos);
+    let wristRightPos = polarToCartesian(this.elbowRight.angle, this.wristRight.distance, elbowRightPos);
+    let thighLeftPos = this.thighLeft.pos;
+    let thighRightPos = this.thighRight.pos;
+    let kneeLeftPos = polarToCartesian(this.thighLeft.angle, this.kneeLeft.distance, thighLeftPos);
+    let kneeRightPos = polarToCartesian(this.thighRight.angle, this.kneeRight.distance, thighRightPos);
+    let heelLeftPos = polarToCartesian(this.kneeLeft.angle, this.heelLeft.distance, kneeLeftPos);
+    let heelRightPos = polarToCartesian(this.kneeRight.angle, this.heelRight.distance, kneeRightPos);
+    let toeLeftPos = polarToCartesian(this.heelLeft.angle, this.toeLeft.distance, heelLeftPos);
+    let toeRightPos = polarToCartesian(this.heelRight.angle, this.toeRight.distance, heelRightPos);
+  
+    let {min, max} = minMax(
+      headPos.y,
+      shoulderLeftPos.y,
+      shoulderRightPos.y,
+      elbowLeftPos.y,
+      elbowRightPos.y,
+      wristLeftPos.y,
+      wristRightPos.y,
+      thighLeftPos.y,
+      thighRightPos.y,
+      kneeLeftPos.y,
+      kneeRightPos.y,
+      heelLeftPos.y,
+      heelRightPos.y,
+      toeLeftPos.y,
+      toeRightPos.y
+    );
+    let deltaY = this.floor.pos.y - max;
+    this.head.pos = {x: headPos.x, y: headPos.y + deltaY};
+    this.shoulderLeft.pos = {x: shoulderLeftPos.x, y: shoulderLeftPos.y + deltaY};
+    this.shoulderRight.pos = {x: shoulderRightPos.x, y: shoulderRightPos.y + deltaY};
+    this.elbowLeft.pos = {x: elbowLeftPos.x, y: elbowLeftPos.y + deltaY};
+    this.elbowRight.pos = {x: elbowRightPos.x, y: elbowRightPos.y + deltaY};
+    this.wristLeft.pos = {x: wristLeftPos.x, y: wristLeftPos.y + deltaY};
+    this.wristRight.pos = {x: wristRightPos.x, y: wristRightPos.y + deltaY};
+    this.thighLeft.pos = {x: thighLeftPos.x, y: thighLeftPos.y + deltaY};
+    this.thighRight.pos = {x: thighRightPos.x, y: thighRightPos.y + deltaY};
+    this.kneeLeft.pos = {x: kneeLeftPos.x, y: kneeLeftPos.y + deltaY};
+    this.kneeRight.pos = {x: kneeRightPos.x, y: kneeRightPos.y + deltaY};
+    this.heelLeft.pos = {x: heelLeftPos.x, y: heelLeftPos.y + deltaY};
+    this.heelRight.pos = {x: heelRightPos.x, y: heelRightPos.y + deltaY};
+    this.toeLeft.pos = {x: toeLeftPos.x, y: toeLeftPos.y + deltaY};
+    this.toeRight.pos = {x: toeRightPos.x, y: toeRightPos.y + deltaY};
+    this.flipPoint.pos.y = (min + max) / 2;
   }
 }
-
-function* rotate(metric, toAngle, step = 1) {
-  let increment = toAngle > metrics[metric].angle ? step : -step;
-  while (Math.abs(toAngle - metrics[metric].angle) > step / 10) {
-    metrics[metric].angle += increment;
-    yield;
-  }
-  metrics[metric].angle %= 360;
-}
-
-function updateMetrics() {
-  let headPos = metrics.head.pos;
-  let shoulderLeftPos = metrics.shoulderLeft.pos;
-  let shoulderRightPos = metrics.shoulderRight.pos;
-  let elbowLeftPos = polarToCartesian(metrics.shoulderLeft.angle, metrics.elbowLeft.distance, shoulderLeftPos);
-  let elbowRightPos = polarToCartesian(metrics.shoulderRight.angle, metrics.elbowRight.distance, shoulderRightPos);
-  let wristLeftPos = polarToCartesian(metrics.elbowLeft.angle, metrics.wristLeft.distance, elbowLeftPos);
-  let wristRightPos = polarToCartesian(metrics.elbowRight.angle, metrics.wristRight.distance, elbowRightPos);
-  let thighLeftPos = metrics.thighLeft.pos;
-  let thighRightPos = metrics.thighRight.pos;
-  let kneeLeftPos = polarToCartesian(metrics.thighLeft.angle, metrics.kneeLeft.distance, thighLeftPos);
-  let kneeRightPos = polarToCartesian(metrics.thighRight.angle, metrics.kneeRight.distance, thighRightPos);
-  let heelLeftPos = polarToCartesian(metrics.kneeLeft.angle, metrics.heelLeft.distance, kneeLeftPos);
-  let heelRightPos = polarToCartesian(metrics.kneeRight.angle, metrics.heelRight.distance, kneeRightPos);
-  let toeLeftPos = polarToCartesian(metrics.heelLeft.angle, metrics.toeLeft.distance, heelLeftPos);
-  let toeRightPos = polarToCartesian(metrics.heelRight.angle, metrics.toeRight.distance, heelRightPos);
-
-  let {min, max} = minMax(
-    headPos.y,
-    shoulderLeftPos.y,
-    shoulderRightPos.y,
-    elbowLeftPos.y,
-    elbowRightPos.y,
-    wristLeftPos.y,
-    wristRightPos.y,
-    thighLeftPos.y,
-    thighRightPos.y,
-    kneeLeftPos.y,
-    kneeRightPos.y,
-    heelLeftPos.y,
-    heelRightPos.y,
-    toeLeftPos.y,
-    toeRightPos.y
-  );
-  let deltaY = metrics.floor.pos.y - max;
-  metrics.head.pos = {x: headPos.x, y: headPos.y + deltaY};
-  metrics.shoulderLeft.pos = {x: shoulderLeftPos.x, y: shoulderLeftPos.y + deltaY};
-  metrics.shoulderRight.pos = {x: shoulderRightPos.x, y: shoulderRightPos.y + deltaY};
-  metrics.elbowLeft.pos = {x: elbowLeftPos.x, y: elbowLeftPos.y + deltaY};
-  metrics.elbowRight.pos = {x: elbowRightPos.x, y: elbowRightPos.y + deltaY};
-  metrics.wristLeft.pos = {x: wristLeftPos.x, y: wristLeftPos.y + deltaY};
-  metrics.wristRight.pos = {x: wristRightPos.x, y: wristRightPos.y + deltaY};
-  metrics.thighLeft.pos = {x: thighLeftPos.x, y: thighLeftPos.y + deltaY};
-  metrics.thighRight.pos = {x: thighRightPos.x, y: thighRightPos.y + deltaY};
-  metrics.kneeLeft.pos = {x: kneeLeftPos.x, y: kneeLeftPos.y + deltaY};
-  metrics.kneeRight.pos = {x: kneeRightPos.x, y: kneeRightPos.y + deltaY};
-  metrics.heelLeft.pos = {x: heelLeftPos.x, y: heelLeftPos.y + deltaY};
-  metrics.heelRight.pos = {x: heelRightPos.x, y: heelRightPos.y + deltaY};
-  metrics.toeLeft.pos = {x: toeLeftPos.x, y: toeLeftPos.y + deltaY};
-  metrics.toeRight.pos = {x: toeRightPos.x, y: toeRightPos.y + deltaY};
-  metrics.flipPoint.pos.y = (min + max) / 2;
-}
-
-updateMetrics();

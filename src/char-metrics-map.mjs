@@ -15,6 +15,7 @@
 
 /** @type {Map<String, CharMetrics>} */
 export let charMetricsMap = new Map([
+  ["", {sl: 103, el: 90, sr: 77, er: 90, tl: 105, kl: 90, hl: 180, tr: 75, kr: 90, hr: 0, fp: 0}],
   ["a", {sl: 220, el: 220, sr: -40, er: -40, tl: 90, kl: 90, hl: 180, tr: 15, kr: 110, hr: 10, fp: 0}],
   ["b", {sl: 90, el: 270, sr: 90, er: -90, tl: 160, kl: 70, hl: 155, tr: 20, kr: 110, hr: 25, fp: 0}],
   ["c", {sl: 220, el: 220, sr: 90, er: -90, tl: 160, kl: 70, hl: 155, tr: 20, kr: 110, hr: 25, fp: 0}],

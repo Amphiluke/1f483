@@ -9,3 +9,11 @@ export function polarToCartesian(angle, radius, origin) {
 export function minMax(...numbers) {
   return {min: Math.min(...numbers), max: Math.max(...numbers)};
 }
+
+export function sleep(duration) {
+  return new Promise(resolve => setTimeout(resolve, duration));
+}
+
+export function sanitizeText(text) {
+  return text.trim().toLowerCase().replace(/[^a-z]+/g, " ");
+}
