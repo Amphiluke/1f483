@@ -17,9 +17,11 @@ import {sanitizeText, sleep} from "./utils.mjs";
 
 let dancingMan = new Man({container: document.querySelector(".paper")});
 
-for (let char of sanitizeText("A B C D E F G H I J K L M N O P Q R S T U V W X Y Z")) {
-  if (char !== " ") {
+for (let char of sanitizeText("AB CD EF GH IJ KL MN OP QR ST UV WX YZ")) {
+  if (char === " ") {
+    dancingMan.renderFlag(true);
+  } else {
     await sleep(1500);
+    await dancingMan.danceChar(char);
   }
-  await dancingMan.danceChar(char);
 }

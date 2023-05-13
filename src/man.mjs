@@ -82,11 +82,6 @@ export class Man {
 
   danceChar(char) {
     return new Promise(resolve => {
-      if (!/[a-z]/.test(char)) {
-        this.renderFlag(true);
-        resolve();
-        return;
-      }
       this.renderFlag(false);
       let moveIterator = this.#metrics.getMoveIterator(char);
       let stepFn = () => {
