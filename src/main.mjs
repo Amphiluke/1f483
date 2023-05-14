@@ -3,13 +3,14 @@ import {sanitizeText, sleep} from "./utils.mjs";
 
 [...document.body.querySelectorAll("[data-dancing-men]")].forEach(container => {
   let text = sanitizeText(container.textContent);
+  let size = Number(container.dataset.dancingMen);
   container.innerHTML = "";
   let man = null;
   for (let char of text) {
     if (char === " ") {
       man?.renderFlag(true);
     } else {
-      man = new Man({container, char, size: 60});
+      man = new Man({container, char, size});
       man.crop();
     }
   }

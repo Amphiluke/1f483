@@ -5,9 +5,15 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/src/style.css">
-    <title>&#x1f483;</title>
+    <title>Dancing Men &#x1f483;</title>
   </head>
   <body>
+    <header class="page-header">
+      <div data-dancing-men="45">Dancing</div>
+      <h1>Dancing Men</h1>
+      <div data-dancing-men="45">Men</div>
+    </header>
+
     <form action="#" id="text-form" class="text-form">
       <textarea id="dance-text" class="dance-text" cols="30" rows="4" placeholder="Enter text here"></textarea>
       <button type="submit" class="dance-button">Dance it! &#x1f483;</button>
@@ -17,12 +23,15 @@
 
     <footer class="footer">
       <img src="/slaney.png" alt="Abe Slaney" width="123" height="175" class="slaney">
-      <span data-dancing-men>Come Elsie</span>
+      <q data-dancing-men="50">Come Elsie</q>
 
       <img src="/elsie.png" alt="Elsie" width="140" height="175" class="elsie">
-      <span data-dancing-men>Never</span>
+      <q data-dancing-men="50">Never</q>
 
-      <span class="about">Inspired by the story <a href="https://en.wikipedia.org/wiki/The_Adventure_of_the_Dancing_Men" target="_blank" rel="noopener">“The Adventure of the Dancing Men”</a> written by Sir Arthur Conan Doyle </span>
+      <div class="about">
+        <p>Inspired by the story <a href="https://en.wikipedia.org/wiki/The_Adventure_of_the_Dancing_Men" target="_blank" rel="noopener">“The Adventure of the Dancing Men”</a> written by Sir Arthur Conan Doyle</p>
+        <p>&copy; Amphiluke, 2023</p>
+      </div>
     </footer>
 
     <script type="module" src="/src/main.mjs"></script>

@@ -17,11 +17,12 @@ export class Man {
   }
 
   #prepareSVG(container, size) {
+    let headRadius = Math.max(this.#metrics.head.radius, 4);
     let strokeWidth = Math.max(size * 0.02, 3.5);
     container.insertAdjacentHTML("beforeend", `
       <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" class="man">
         <g class="man-group">
-          <circle cx="0" cy="0" r="${this.#metrics.head.radius}" class="man-head" fill="currentColor"/>
+          <circle cx="0" cy="0" r="${headRadius}" class="man-head" fill="currentColor"/>
           <path d="M 0 0" stroke="currentColor" stroke-width="${strokeWidth}" stroke-linejoin="round" stroke-linecap="round" fill="none" class="man-body"/>
           <path d="M 0 0" stroke="#b00" stroke-width="${strokeWidth * 0.6}" fill="#b00" class="man-flag"/>
         </g>

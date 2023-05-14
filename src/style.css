@@ -5,14 +5,51 @@ html {
 }
 
 body {
+  box-shadow: -2px 0 15px 0 #ccc, 2px 0 15px 0 #ccc;
   box-sizing: border-box;
   color: #333;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
+  font: 1.3rem / 1.5 Garamond, "DejaVu Serif", serif;
   margin: 0 auto;
   max-width: 1200px;
   min-height: 100dvh;
-  padding: 0 15px;
+  padding: 0 40px;
+}
+
+@media (max-width: 800px) {
+  body {
+    padding: 0 15px;
+  }
+}
+
+a {
+  color: #000;
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  color: inherit;
+}
+
+.page-header {
+  border-bottom: 5px double;
+  margin-block: 2rem 4rem;
+  padding-bottom: 1rem;
+  position: relative;
+}
+
+.page-header h1 {
+  font-size: 4rem;
+  font-variant: small-caps;
+  line-height: 1;
+  margin: 0;
+  text-align: center;
+}
+
+.page-header [data-dancing-men] {
+  line-height: 0;
+  text-align: center;
 }
 
 .paper {
@@ -20,6 +57,7 @@ body {
   background: url(/paper.webp) 50% 50% / contain no-repeat;
   display: flex;
   filter: drop-shadow(0 0 10px #999);
+  flex-grow: 1;
   height: 648px;
   justify-content: center;
   margin: 48px auto;
@@ -49,8 +87,9 @@ body {
 
 .footer {
   display: grid;
+  font-size: 0.9rem;
   grid-template-columns: auto 1fr 1fr auto;
-  margin-top: 60px;
+  margin: 60px 0 30px;
 }
 
 .slaney,
@@ -67,12 +106,20 @@ body {
   grid-column: 4;
 }
 
-.elsie + [data-dancing-men] {
+.slaney + q,
+.elsie + q {
+  quotes: none;
+}
+
+.elsie + q {
   text-align: end;
 }
 
 .about {
   align-self: center;
+  border-block: 3px double;
+  font-style: italic;
   grid-column: 2 / 4;
+  margin-inline: 30px;
   text-align: center;
 }
