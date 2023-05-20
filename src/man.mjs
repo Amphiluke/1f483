@@ -17,7 +17,7 @@ export class Man {
   }
 
   #prepareSVG(container, size) {
-    let headRadius = Math.max(this.#metrics.head.radius, 4);
+    let headRadius = Math.max(this.#metrics.head.radius, 3.5);
     let strokeWidth = Math.max(size * 0.02, 3.5);
     container.insertAdjacentHTML("beforeend", `
       <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" class="man">

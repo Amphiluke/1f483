@@ -52,6 +52,55 @@ a:hover {
   text-align: center;
 }
 
+.text-form {
+  display: flex;
+  height: calc(5em * 1.5);
+}
+
+.text-container,
+.dance-text {
+  flex-grow: 1;
+  margin: 0;
+  overflow: auto;
+  padding: 5px 10px;
+  text-align: justify;
+}
+
+.text-container {
+  white-space: pre-wrap;
+}
+
+.dance-pending {
+  color: #aaa;
+}
+
+.text-edit {
+  background: #f3f3f3;
+  border: none;
+  font: inherit;
+  resize: none;
+  width: 100%;
+}
+
+.edit-button,
+.dance-button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 1.5em;
+  min-width: 60px;
+  padding: 0 0 0 15px;
+}
+
+.text-form.edit-mode .text-container,
+.text-form.edit-mode .edit-button,
+.text-form:not(.edit-mode) .text-edit,
+.text-form:not(.edit-mode) .dance-button {
+  display: none;
+}
+
 .paper {
   align-items: center;
   background: url(/paper.webp) 50% 50% / contain no-repeat;
@@ -62,27 +111,6 @@ a:hover {
   justify-content: center;
   margin: 48px auto;
   width: 600px;
-}
-
-.text-form {
-  display: flex;
-}
-
-.dance-text {
-  background: #f7f7f7;
-  border: solid #333;
-  border-width: 0 0 1px;
-  flex-grow: 1;
-  padding: 5px 10px;
-}
-
-.dance-button {
-  background: none;
-  border: none;
-  color: inherit;
-  flex-shrink: 0;
-  font-size: 1.5em;
-  padding: 0 0 0 15px;
 }
 
 .footer {
