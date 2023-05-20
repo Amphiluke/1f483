@@ -1,5 +1,5 @@
 import {Metrics} from "./metrics.mjs";
-import {minMax} from "./utils.mjs";
+import {$, minMax} from "./utils.mjs";
 
 export class Man {
   #svg;
@@ -28,10 +28,10 @@ export class Man {
         </g>
       </svg>`.trim());
     this.#svg = container.lastChild;
-    this.#group = this.#svg.querySelector(".man-group");
-    this.#head = this.#svg.querySelector(".man-head");
-    this.#body = this.#svg.querySelector(".man-body");
-    this.#flag = this.#svg.querySelector(".man-flag");
+    this.#group = $(".man-group", this.#svg);
+    this.#head = $(".man-head", this.#svg);
+    this.#body = $(".man-body", this.#svg);
+    this.#flag = $(".man-flag", this.#svg);
   }
 
   render() {

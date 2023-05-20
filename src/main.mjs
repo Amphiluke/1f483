@@ -1,7 +1,8 @@
 import {Man} from "./man.mjs";
-import {sanitizeText, sleep} from "./utils.mjs";
+import {$, $$, sanitizeText} from "./utils.mjs";
+import {danceIterator} from "./dancing-man.mjs";
 
-[...document.body.querySelectorAll("[data-dancing-men]")].forEach(container => {
+$$("[data-dancing-men]").forEach(container => {
   let text = sanitizeText(container.textContent);
   let size = Number(container.dataset.dancingMen);
   container.innerHTML = "";
@@ -16,19 +17,37 @@ import {sanitizeText, sleep} from "./utils.mjs";
   }
 });
 
-let dancingMan = new Man({container: document.body.querySelector(".paper")});
-let danceComplete = document.body.querySelector(".dance-complete");
-let dancePending = document.body.querySelector(".dance-pending");
+let currentDanceIterator = null;
 
-for (let char of sanitizeText(dancePending.textContent)) {
-  if (char === " ") {
-    dancingMan.renderFlag(true);
-  } else {
-    await sleep(750);
-    await dancingMan.danceChar(char);
+async function dance(text) {
+  if (currentDanceIterator) {
+    await currentDanceIterator.return();
+  }
+  let textContainer = $(".text-container");
+  textContainer.innerHTML = `<span class="dance-complete"></span><span class="dance-pending">${text}</span>`;
+  let danceComplete = $(".dance-complete");
+  let dancePending = $(".dance-pending");
+  currentDanceIterator = danceIterator(text);
+  for await (let char of currentDanceIterator) {
     let pendingContent = dancePending.textContent;
     let charPos = pendingContent.toLowerCase().indexOf(char) + 1;
     danceComplete.textContent += pendingContent.slice(0, charPos);
     dancePending.textContent = pendingContent.slice(charPos);
   }
+  if (dancePending.textContent.length) {
+    danceComplete.textContent += dancePending.textContent;
+    dancePending.textContent = "";
+  }
 }
+
+dance($(".text-edit").value);
+
+$(".edit-button").addEventListener("click", () => {
+  $(".text-form").classList.add("edit-mode");
+  $(".text-edit").focus();
+});
+
+$(".dance-button").addEventListener("click", () => {
+  $(".text-form").classList.remove("edit-mode");
+  dance($(".text-edit").value);
+});

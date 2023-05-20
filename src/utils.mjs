@@ -17,3 +17,11 @@ export function sleep(duration) {
 export function sanitizeText(text) {
   return text.trim().toLowerCase().replace(/[^a-z]+/g, " ");
 }
+
+export function $(selector, parent = document.body) {
+  return parent.querySelector(selector);
+}
+
+export function $$(selector, parent = document.body) {
+  return [...parent.querySelectorAll(selector)];
+}
