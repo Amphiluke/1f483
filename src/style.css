@@ -1,5 +1,10 @@
 @import url(normalize.css/normalize.css);
 
+::selection {
+  background-color: #333;
+  color: #eee;
+}
+
 html {
   background: #c8c8c8;
 }
@@ -18,7 +23,7 @@ body {
   padding: 0 40px;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 920px) {
   body {
     padding: 0 15px;
   }
@@ -34,11 +39,16 @@ a:hover {
 }
 
 .page-header {
-  background: url(/sherlock.png) right 5px bottom / contain no-repeat;
   border-bottom: 5px double;
   margin-block: 2rem 4rem;
   padding-bottom: 1rem;
   position: relative;
+}
+
+@media (min-width: 921px) {
+  .page-header {
+    background: url(/sherlock.png) right 5px bottom / contain no-repeat;
+  }
 }
 
 .page-header h1 {
@@ -67,16 +77,23 @@ a:hover {
 
 .paper {
   align-items: center;
+  aspect-ratio: 0.926;
   background: url(/paper.webp) 50% 50% / contain no-repeat;
   display: flex;
   filter: drop-shadow(0 0 10px #999);
-  height: 648px;
   justify-content: center;
   margin: 0 auto 48px;
-  width: 600px;
+  max-width: 600px;
+}
+
+.paper .man {
+  height: auto;
+  max-width: 100%;
+  width: 500px;
 }
 
 .text-form {
+  align-items: flex-start;
   display: flex;
 }
 
@@ -89,10 +106,15 @@ a:hover {
 }
 
 .text-container {
-  columns: 2;
-  column-gap: 2.5em;
-  column-rule: 1px solid;
   white-space: pre-wrap;
+}
+
+@media (min-width: 921px) {
+  .text-container {
+    columns: 2;
+    column-gap: 2.5em;
+    column-rule: 1px solid;
+  }
 }
 
 .dance-pending {
@@ -115,7 +137,7 @@ a:hover {
   cursor: pointer;
   flex-shrink: 0;
   font-size: 1.5em;
-  margin-left: 15px;
+  min-height: 60px;
   min-width: 60px;
   padding: 0;
 }
@@ -128,40 +150,65 @@ a:hover {
 }
 
 .page-footer {
-  display: grid;
   font-size: 0.9rem;
-  grid-template-columns: auto 1fr 1fr auto;
   margin: 60px 0 30px;
 }
 
-.slaney,
-.elsie {
-  grid-row: 1 / 3;
-  opacity: 0.7;
+@media (min-width: 921px) {
+  .page-footer {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .page-footer::before,
+  .page-footer::after {
+    content: "";
+    height: 175px;
+    opacity: 0.7;
+  }
+
+  .page-footer::before {
+    background: url(/slaney.png) 0 0 / contain no-repeat;
+    grid-area: 1 / 1 / 3 / 2;
+    width: 123px;
+  }
+
+  .page-footer::after {
+    background: url(/elsie.png) 0 0 / contain no-repeat;
+    grid-area: 1 / 3 / 3 / 4;
+    width: 140px;
+  }
 }
 
-.slaney {
-  grid-column: 1;
+.slaney-elsie-chat {
+  display: flex;
+  justify-content: space-between;
 }
 
-.elsie {
-  grid-column: 4;
-}
-
-.slaney + q,
-.elsie + q {
+.slaney-elsie-chat q {
   quotes: none;
 }
 
-.elsie + q {
-  text-align: end;
+@media (max-width: 920px) {
+  .slaney-elsie-chat q {
+    transform: scale(0.7);
+    transform-origin: 0 0;
+  }
+
+  .slaney-elsie-chat q + q {
+    transform-origin: 100% 0;
+  }
 }
 
 .about {
-  align-self: center;
   border-block: 3px double;
   font-style: italic;
-  grid-column: 2 / 4;
   margin-inline: 30px;
   text-align: center;
+}
+
+@media (max-width: 920px) {
+  .about {
+    margin-inline: 0;
+  }
 }
