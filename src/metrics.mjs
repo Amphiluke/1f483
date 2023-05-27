@@ -92,13 +92,19 @@ export class Metrics {
     }
   }
 
-  * rotate(metric, toAngle, step = 1) {
-    let increment = toAngle > this[metric].angle ? step : -step;
-    while (Math.abs(toAngle - this[metric].angle) > step / 10) {
-      this[metric].angle += increment;
-      yield;
+  * rotate(metric, toAngle, step = 2) {
+    let metricProp = this[metric];
+    if (metricProp.angle < toAngle) {
+      while (metricProp.angle < toAngle) {
+        metricProp.angle = Math.min(metricProp.angle + step, toAngle);
+        yield;
+      }
+    } else {
+      while (metricProp.angle > toAngle) {
+        metricProp.angle = Math.max(metricProp.angle - step, toAngle);
+        yield;
+      }
     }
-    this[metric].angle %= 360;
   }
 
   #updateMetrics() {

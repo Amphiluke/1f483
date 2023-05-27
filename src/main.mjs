@@ -1,5 +1,5 @@
 import {Man} from "./man.mjs";
-import {$, $$, sanitizeText} from "./utils.mjs";
+import {$, $$, sanitizeText, sanitizeHTML} from "./utils.mjs";
 import {danceIterator} from "./dancing-man.mjs";
 
 $$("[data-dancing-men]").forEach(container => {
@@ -24,7 +24,7 @@ async function dance(text) {
     await currentDanceIterator.return();
   }
   let textContainer = $(".text-container");
-  textContainer.innerHTML = `<span class="dance-complete"></span><span class="dance-pending">${text}</span>`;
+  textContainer.innerHTML = `<span class="dance-complete"></span><span class="dance-pending">${sanitizeHTML(text)}</span>`;
   let danceComplete = $(".dance-complete");
   let dancePending = $(".dance-pending");
   currentDanceIterator = danceIterator(text);
@@ -38,6 +38,11 @@ async function dance(text) {
     danceComplete.textContent += dancePending.textContent;
     dancePending.textContent = "";
   }
+}
+
+let queryText = new URLSearchParams(location.search).get("text");
+if (queryText) {
+  $(".text-edit").value = queryText;
 }
 
 dance($(".text-edit").value);

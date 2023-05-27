@@ -18,6 +18,10 @@ export function sanitizeText(text) {
   return text.trim().toLowerCase().replace(/[^a-z]+/g, " ");
 }
 
+export function sanitizeHTML(html) {
+  return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
 export function $(selector, parent = document.body) {
   return parent.querySelector(selector);
 }
