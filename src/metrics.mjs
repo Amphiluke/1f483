@@ -1,5 +1,6 @@
 import {polarToCartesian, minMax} from "./utils.mjs";
 import {charMetricsMap} from "./char-metrics-map.mjs";
+import {preferences} from "./preferences.mjs";
 
 export class Metrics {
   head = {radius: 0, pos: null};
@@ -92,7 +93,7 @@ export class Metrics {
     }
   }
 
-  * rotate(metric, toAngle, step = 2) {
+  * rotate(metric, toAngle, step = preferences.speed) {
     let metricProp = this[metric];
     if (metricProp.angle < toAngle) {
       while (metricProp.angle < toAngle) {

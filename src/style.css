@@ -1,7 +1,12 @@
 @import url(normalize.css/normalize.css);
 
+:root {
+  --text-base-color: #333;
+  --text-light-color: #777;
+}
+
 ::selection {
-  background-color: #333;
+  background-color: var(--text-base-color);
   color: #eee;
 }
 
@@ -13,7 +18,7 @@ body {
   background: url(/texture.jpg) 0 0 repeat;
   box-shadow: -2px 0 15px 0 #aaa, 2px 0 15px 0 #aaa;
   box-sizing: border-box;
-  color: #333;
+  color: var(--text-base-color);
   display: flex;
   flex-direction: column;
   font: 1.3rem / 1.5 Garamond, "DejaVu Serif", serif;
@@ -38,6 +43,11 @@ a:hover {
   color: inherit;
 }
 
+[type="checkbox"],
+[type="range"] {
+  accent-color: var(--text-base-color);
+}
+
 .page-header {
   border-bottom: 5px double;
   margin-block: 2rem 4rem;
@@ -58,7 +68,7 @@ a:hover {
 }
 
 .page-header h1::after {
-  color: #777;
+  color: var(--text-light-color);
   content: "\2619" " 1f483 " "\2767";
   display: block;
   font-size: 0.5em;
@@ -84,12 +94,65 @@ a:hover {
   justify-content: center;
   margin: 0 auto 48px;
   max-width: 600px;
+  position: relative;
+}
+
+.preferences-button {
+  background: none;
+  border: none;
+  color: var(--text-light-color);
+  cursor: pointer;
+  font-size: 2.5rem;
+  padding: 0.3em;
+  position: absolute;
+  right: 2%;
+  top: 5%;
+}
+
+.preferences-button::after {
+  content: "\2699";
+}
+
+.preferences-mode .preferences-button::after {
+  content: "\2713";
+}
+
+.preferences {
+  width: 60%;
+}
+
+.preferences h2 {
+  border-bottom: 1px solid;
+}
+
+.preferences [type="checkbox"] {
+  margin-right: 0.3em;
+  transform: scale(1.3);
+}
+
+.preferences [type="range"] {
+  width: 100%;
+}
+
+.ticks {
+  display: flex;
+  justify-content: space-between;
+  line-height: 1;
+}
+
+.ticks b {
+  transform: rotate(45deg);
 }
 
 .paper .man {
   height: auto;
   max-width: 100%;
   width: 500px;
+}
+
+.paper.preferences-mode .man,
+.paper:not(.preferences-mode) .preferences {
+  display: none;
 }
 
 .text-form {
@@ -136,7 +199,7 @@ a:hover {
   color: inherit;
   cursor: pointer;
   flex-shrink: 0;
-  font-size: 1.5em;
+  font-size: 1.5rem;
   min-height: 60px;
   min-width: 60px;
   padding: 0;
