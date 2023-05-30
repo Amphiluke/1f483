@@ -136,7 +136,7 @@ a:hover {
 
 .ticks {
   display: flex;
-  font-size: 1.5em;
+  font-size: 1.2em;
   justify-content: space-between;
   line-height: 1;
 }
