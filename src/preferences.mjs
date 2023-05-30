@@ -40,6 +40,13 @@ speedCtrl.addEventListener("change", () => {
   preferences.speed = speedCtrl.value;
 });
 
+$(".ticks", preferencesForm).addEventListener("click", ({target}) => {
+  let {speed} = target.dataset;
+  if (speed) {
+    preferences.speed = speedCtrl.value = speed;
+  }
+});
+
 charPauseCtrl.addEventListener("change", () => {
   preferences.charPause = charPauseCtrl.checked;
 });

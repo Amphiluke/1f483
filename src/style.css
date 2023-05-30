@@ -136,12 +136,25 @@ a:hover {
 
 .ticks {
   display: flex;
+  font-size: 1.5em;
   justify-content: space-between;
   line-height: 1;
 }
 
-.ticks b {
+[data-speed] {
+  cursor: pointer;
+}
+
+[data-speed="1"] {
   transform: rotate(45deg);
+}
+
+[data-speed="3"] {
+  transform: rotate(-45deg);
+}
+
+[data-speed="4"] {
+  transform: rotate(-90deg);
 }
 
 .paper .man {
@@ -219,6 +232,7 @@ a:hover {
 
 @media (min-width: 921px) {
   .page-footer {
+    align-items: flex-end;
     display: grid;
     grid-template-columns: auto 1fr auto;
   }
