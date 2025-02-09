@@ -21,7 +21,7 @@ export let preferences = {
   set speed(value) {
     localStorage.setItem("speed", value.toString());
     cache.speed = Number(value);
-  }
+  },
 };
 
 let preferencesForm = $(".paper");
