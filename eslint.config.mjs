@@ -1,5 +1,5 @@
 import js from "@eslint/js";
-import stylisticJs from "@stylistic/eslint-plugin-js";
+import stylistic from "@stylistic/eslint-plugin";
 import globals from "globals";
 
 export default [
@@ -19,13 +19,13 @@ export default [
   js.configs.recommended,
   {
     plugins: {
-      "@stylistic/js": stylisticJs,
+      "@stylistic": stylistic,
     },
     rules: {
-      "@stylistic/js/comma-dangle": ["error", {arrays: "always-multiline",  objects: "always-multiline"}],
-      "@stylistic/js/indent": ["error", 2],
-      "@stylistic/js/quotes": ["error", "double"],
-      "@stylistic/js/semi": "error",
+      "@stylistic/comma-dangle": ["error", {arrays: "always-multiline",  objects: "always-multiline"}],
+      "@stylistic/indent": ["error", 2],
+      "@stylistic/quotes": ["error", "double"],
+      "@stylistic/semi": "error",
     },
   },
 ];
