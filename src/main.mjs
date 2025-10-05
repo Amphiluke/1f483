@@ -1,5 +1,5 @@
 import {Man} from "./man.mjs";
-import {$, $$, sanitizeText, sanitizeHTML} from "./utils.mjs";
+import {$, $$, sanitizeText} from "./utils.mjs";
 import {danceIterator} from "./dancing-man.mjs";
 
 $$("[data-dancing-men]").forEach(container => {
@@ -23,21 +23,28 @@ async function dance(text) {
   if (currentDanceIterator) {
     await currentDanceIterator.return();
   }
+
   let textContainer = $(".text-container");
-  textContainer.innerHTML = `<span class="dance-complete"></span><span class="dance-pending">${sanitizeHTML(text)}</span>`;
-  let danceComplete = $(".dance-complete");
-  let dancePending = $(".dance-pending");
+  textContainer.textContent = text;
+  let textNode = textContainer.firstChild;
+
+  let pengingRange = new Range();
+  pengingRange.setStart(textNode, 0);
+  pengingRange.setEnd(textNode, text.length);
+
+  if (CSS.highlights) {
+    CSS.highlights.clear();
+    CSS.highlights.set("pending-highlight", new Highlight(pengingRange));
+  }
+
   currentDanceIterator = danceIterator(text);
+  let lowerCaseText = text.toLowerCase();
+  let lastPos = -1;
   for await (let char of currentDanceIterator) {
-    let pendingContent = dancePending.textContent;
-    let charPos = pendingContent.toLowerCase().indexOf(char) + 1;
-    danceComplete.textContent += pendingContent.slice(0, charPos);
-    dancePending.textContent = pendingContent.slice(charPos);
+    lastPos = lowerCaseText.indexOf(char, lastPos + 1);
+    pengingRange.setStart(textNode, lastPos + 1);
   }
-  if (dancePending.textContent.length) {
-    danceComplete.textContent += dancePending.textContent;
-    dancePending.textContent = "";
-  }
+  pengingRange.collapse();
 }
 
 let queryText = new URLSearchParams(location.search).get("text");
@@ -52,7 +59,8 @@ $(".edit-button").addEventListener("click", () => {
   $(".text-edit").focus();
 });
 
-$(".dance-button").addEventListener("click", () => {
-  $(".text-form").classList.remove("edit-mode");
+$(".text-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  e.target.classList.remove("edit-mode");
   dance($(".text-edit").value);
 });
